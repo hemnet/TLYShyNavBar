@@ -450,7 +450,7 @@ static char shyNavBarManagerKey;
 
 - (void)tly_swizzledViewWillDisappear:(BOOL)animated
 {
-    [[self _internalShyNavBarManager] cleanup];
+    [[self _internalShyNavBarManager].navBarController expand];
     [self tly_swizzledViewWillDisappear:animated];
 }
 
