@@ -429,7 +429,6 @@ static char shyNavBarManagerKey;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [self tly_swizzleInstanceMethod:@selector(viewWillAppear:) withReplacement:@selector(tly_swizzledViewWillAppear:)];
-        [self tly_swizzleInstanceMethod:@selector(viewWillLayoutSubviews) withReplacement:@selector(tly_swizzledViewDidLayoutSubviews)];
         [self tly_swizzleInstanceMethod:@selector(viewWillDisappear:) withReplacement:@selector(tly_swizzledViewWillDisappear:)];
     });
 }
@@ -440,12 +439,6 @@ static char shyNavBarManagerKey;
 {
     [[self _internalShyNavBarManager] prepareForDisplay];
     [self tly_swizzledViewWillAppear:animated];
-}
-
-- (void)tly_swizzledViewDidLayoutSubviews
-{
-    [[self _internalShyNavBarManager] layoutViews];
-    [self tly_swizzledViewDidLayoutSubviews];
 }
 
 - (void)tly_swizzledViewWillDisappear:(BOOL)animated
