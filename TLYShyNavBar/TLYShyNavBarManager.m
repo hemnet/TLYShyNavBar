@@ -239,7 +239,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
     if (!isnan(self.previousYOffset))
     {
         // 1 - Calculate the delta
-        CGFloat deltaY = (self.previousYOffset - self.scrollView.contentOffset.y) * self.contractionSpeedFactor;
+        CGFloat deltaY = (self.previousYOffset - self.scrollView.contentOffset.y);
 
         // 2 - Ignore any scrollOffset beyond the bounds
         CGFloat start = -self.scrollView.contentInset.top;
@@ -278,7 +278,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
             CGFloat availableResistance = self.contractionResistance - self.resistanceConsumed;
             self.resistanceConsumed = MIN(self.contractionResistance, self.resistanceConsumed - deltaY);
             
-            deltaY = MIN(0, availableResistance + deltaY);
+            deltaY = MIN(0, availableResistance + deltaY) * self.contractionSpeedFactor;
         }
         // 5.2 - Only apply resistance if expanding above the status bar
         else if (self.scrollView.contentOffset.y > 0)
