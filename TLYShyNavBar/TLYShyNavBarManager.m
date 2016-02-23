@@ -64,6 +64,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
         self.expansionResistance = 200.f;
         self.contractionResistance = 0.f;
         self.contractionSpeedFactor = 1.f;
+        self.expansionSpeedFactor = 1.f;
         
         self.fadeBehavior = TLYShyNavBarFadeSubviews;
         self.previousYOffset = NAN;
@@ -286,7 +287,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
             CGFloat availableResistance = self.expansionResistance - self.resistanceConsumed;
             self.resistanceConsumed = MIN(self.expansionResistance, self.resistanceConsumed + deltaY);
             
-            deltaY = MAX(0, deltaY - availableResistance);
+            deltaY = MAX(0, deltaY - availableResistance) * self.expansionSpeedFactor;
         }
         
         // 6 - Update the navigation bar shyViewController
@@ -307,7 +308,9 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
     }
     
     self.resistanceConsumed = 0;
-    [self.navBarController snap:self.contracting];
+    float contractionOffset =  [self.navBarController snap:self.contracting];
+    CGFloat contractionSpeedMultiplier = 1.0 / self.contractionSpeedFactor;
+    [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y - (contractionOffset * contractionSpeedMultiplier)) animated:YES];
 }
 
 #pragma mark - KVO

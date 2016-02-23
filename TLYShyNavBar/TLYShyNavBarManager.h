@@ -61,6 +61,7 @@
 @property (nonatomic) CGFloat contractionResistance;    // default 0
 
 @property (nonatomic) CGFloat contractionSpeedFactor;   // default 1
+@property (nonatomic) CGFloat expansionSpeedFactor;   // default 1
 
 /* Choose how the navbar fades as it contracts/expands.
  * Defaults to FadeSubviews
