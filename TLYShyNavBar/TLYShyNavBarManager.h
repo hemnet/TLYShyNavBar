@@ -68,6 +68,11 @@
  */
 @property (nonatomic) TLYShyNavBarFade fadeBehavior;
 
+/* Defines whether or not the content offset should be changed to
+ * whenever snapping the navigation bar in place.
+ */
+@property (nonatomic) BOOL updateContentOffsetWhenSnapping;
+
 /* Set NO to disable shyNavBar behavior temporarily.
  * Defaults to NO
  */

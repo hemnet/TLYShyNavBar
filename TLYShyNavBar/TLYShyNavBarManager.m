@@ -60,6 +60,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
         /* Initialize defaults */
         self.contracting = NO;
         self.previousContractionState = YES;
+        self.updateContentOffsetWhenSnapping = NO;
         
         self.expansionResistance = 200.f;
         self.contractionResistance = 0.f;
@@ -309,8 +310,11 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
     
     self.resistanceConsumed = 0;
     float contractionOffset =  [self.navBarController snap:self.contracting];
-    CGFloat contractionSpeedMultiplier = 1.0 / self.contractionSpeedFactor;
-    [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y - (contractionOffset * contractionSpeedMultiplier)) animated:YES];
+    
+    if (self.updateContentOffsetWhenSnapping) {
+        CGFloat contractionSpeedMultiplier = 1.0 / self.contractionSpeedFactor;
+        [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y - (contractionOffset * contractionSpeedMultiplier)) animated:YES];
+    }
 }
 
 #pragma mark - KVO
