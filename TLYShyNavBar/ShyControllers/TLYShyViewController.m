@@ -16,7 +16,7 @@
     CGPoint maxEdge = CGPointMake(0, CGRectGetHeight(self.view.bounds));
     CGPoint normalizedMaxEdge = [superview convertPoint:maxEdge fromView:self.view];
     
-    return normalizedMaxEdge.y;
+    return  MIN(normalizedMaxEdge.y, 64.0);
 }
 
 - (CGFloat)calculateTotalHeightRecursively
