@@ -46,9 +46,12 @@ static inline CGFloat AACStatusBarHeight(UIViewController *viewController)
      * When there is a larger than 20 pixel status bar (e.g. a phone call is in progress or GPS is active), the center needs
      * to shift up 20 pixels to avoid this 'dead space' being visible above the usual nav bar.
      */
-    if (statusBarHeight > 20)
+  
+    CGSize  statusBarSize = [UIApplication sharedApplication].statusBarFrame.size;
+  
+    if (statusBarHeight > statusBarSize.height)
     {
-        statusBarHeight -= 20;
+        statusBarHeight -= statusBarSize.height;
     }
     
     return statusBarHeight;

@@ -16,7 +16,7 @@
     CGPoint maxEdge = CGPointMake(0, CGRectGetHeight(self.view.bounds));
     CGPoint normalizedMaxEdge = [superview convertPoint:maxEdge fromView:self.view];
     
-    return  MIN(normalizedMaxEdge.y, 64.0);
+    return  MIN(normalizedMaxEdge.y, 44.0 + CGRectGetHeight([[UIApplication sharedApplication] statusBarFrame]));
 }
 
 - (CGFloat)calculateTotalHeightRecursively
