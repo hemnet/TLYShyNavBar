@@ -116,6 +116,9 @@
         if (!isBackgroundView && !isViewHidden)
         {
             view.alpha = alpha;
+            for (UIView *subview in view.subviews) {
+                subview.alpha = alpha;
+            }
         }
     }
 }
