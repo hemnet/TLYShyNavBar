@@ -94,7 +94,7 @@
             
         case TLYShyNavBarFadeSubviews:
             self.view.alpha = 1.f;
-            [self _updateSubviewsAlpha:alpha];
+            [self _updateSubviewsAlpha:alpha recursively:YES];
             break;
             
         case TLYShyNavBarFadeNavbar:
@@ -104,9 +104,7 @@
     }
 }
 
-// This method is courtesy of GTScrollNavigationBar
-// https://github.com/luugiathuy/GTScrollNavigationBar
-- (void)_updateSubviewsAlpha:(CGFloat)alpha
+- (void)_updateSubviewsAlpha:(CGFloat)alpha recursively:(BOOL)recursively
 {
     for (UIView* view in self.view.subviews)
     {
@@ -116,11 +114,21 @@
         if (!isBackgroundView && !isViewHidden)
         {
             view.alpha = alpha;
-            for (UIView *subview in view.subviews) {
-                subview.alpha = alpha;
+            if (recursively) {
+                for (UIView *subview in view.subviews) {
+                    subview.alpha = alpha;
+                }
             }
         }
     }
+}
+
+
+// This method is courtesy of GTScrollNavigationBar
+// https://github.com/luugiathuy/GTScrollNavigationBar
+- (void)_updateSubviewsAlpha:(CGFloat)alpha
+{
+    [self _updateSubviewsAlpha:alpha recursively:NO];
 }
 
 - (void)_updateCenter:(CGPoint)newCenter
