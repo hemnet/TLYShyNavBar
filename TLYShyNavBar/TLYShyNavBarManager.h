@@ -78,6 +78,11 @@
  */
 @property (nonatomic) BOOL disable;
 
+/*
+ * Enables automatic scroll event delegation.
+ */
+- (void)setupDelegateProxy;
+
 @end
 
 
