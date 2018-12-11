@@ -22,7 +22,7 @@
  *  viewController.shyNavManager = ...;
  *
  */
-@interface TLYShyNavBarManager : NSObject
+@interface TLYShyNavBarManager : NSObject <UIScrollViewDelegate>
 
 /* The view controller that is part of the navigation stack
  * IMPORTANT: Must have access to navigationController

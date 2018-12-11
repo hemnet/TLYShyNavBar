@@ -12,7 +12,6 @@
 #import "ShyControllers/TLYShyStatusBarController.h"
 #import "ShyControllers/TLYShyScrollViewController.h"
 
-#import "Categories/TLYDelegateProxy.h"
 #import "Categories/UIViewController+BetterLayoutGuides.h"
 #import "Categories/NSObject+TLYSwizzlingHelpers.h"
 #import "Categories/UIScrollView+Helpers.h"
@@ -25,14 +24,13 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
 
 #pragma mark - TLYShyNavBarManager class
 
-@interface TLYShyNavBarManager () <UIScrollViewDelegate>
+@interface TLYShyNavBarManager ()
 
 @property (nonatomic, strong) id<TLYShyParent> statusBarController;
 @property (nonatomic, strong) TLYShyViewController *navBarController;
 @property (nonatomic, strong) TLYShyViewController *extensionController;
 @property (nonatomic, strong) TLYShyScrollViewController *scrollViewController;
 
-@property (nonatomic, strong) TLYDelegateProxy *delegateProxy;
 
 @property (nonatomic, strong) UIView *extensionViewContainer;
 
@@ -55,8 +53,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
     self = [super init];
     if (self)
     {
-        self.delegateProxy = [[TLYDelegateProxy alloc] initWithMiddleMan:self];
-        
+      
         /* Initialize defaults */
         self.contracting = NO;
         self.previousContractionState = YES;
@@ -108,12 +105,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
 
 - (void)dealloc
 {
-    // sanity check
-    if (_scrollView.delegate == _delegateProxy)
-    {
-        _scrollView.delegate = _delegateProxy.originalDelegate;
-    }
-    
+  
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [_scrollView removeObserver:self forKeyPath:@"contentSize" context:kTLYShyNavBarManagerKVOContext];
 }
@@ -146,21 +138,10 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
 - (void)setScrollView:(UIScrollView *)scrollView
 {
     [_scrollView removeObserver:self forKeyPath:@"contentSize" context:kTLYShyNavBarManagerKVOContext];
-    
-    if (_scrollView.delegate == self.delegateProxy)
-    {
-        _scrollView.delegate = self.delegateProxy.originalDelegate;
-    }
-    
+  
     _scrollView = scrollView;
     self.scrollViewController.scrollView = scrollView;
-    
-    if (_scrollView.delegate != self.delegateProxy)
-    {
-        self.delegateProxy.originalDelegate = _scrollView.delegate;
-        _scrollView.delegate = (id)self.delegateProxy;
-    }
-    
+  
     [self cleanup];
     [self layoutViews];
     
