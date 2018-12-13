@@ -25,7 +25,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
 
 #pragma mark - TLYShyNavBarManager class
 
-@interface TLYShyNavBarManager () <UIScrollViewDelegate>
+@interface TLYShyNavBarManager ()
 
 @property (nonatomic, strong) id<TLYShyParent> statusBarController;
 @property (nonatomic, strong) TLYShyViewController *navBarController;
@@ -55,8 +55,6 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
     self = [super init];
     if (self)
     {
-        self.delegateProxy = [[TLYDelegateProxy alloc] initWithMiddleMan:self];
-        
         /* Initialize defaults */
         self.contracting = NO;
         self.previousContractionState = YES;
@@ -106,12 +104,26 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
     return self;
 }
 
+- (void)setupDelegateProxy
+{
+    if (self.delegateProxy == nil) {
+        self.delegateProxy = [[TLYDelegateProxy alloc] initWithMiddleMan:self];
+        
+        if (_scrollView) {
+            // Forcing reset of middle man if the scroll view is already set.
+            [self setScrollView:_scrollView];
+        }
+    }
+}
+
 - (void)dealloc
 {
-    // sanity check
-    if (_scrollView.delegate == _delegateProxy)
-    {
-        _scrollView.delegate = _delegateProxy.originalDelegate;
+    if (self.delegateProxy) {
+        // sanity check
+        if (_scrollView.delegate == _delegateProxy)
+        {
+            _scrollView.delegate = _delegateProxy.originalDelegate;
+        }
     }
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -146,21 +158,25 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
 - (void)setScrollView:(UIScrollView *)scrollView
 {
     [_scrollView removeObserver:self forKeyPath:@"contentSize" context:kTLYShyNavBarManagerKVOContext];
-    
-    if (_scrollView.delegate == self.delegateProxy)
-    {
-        _scrollView.delegate = self.delegateProxy.originalDelegate;
+
+    if (self.delegateProxy) {
+        if (_scrollView.delegate == self.delegateProxy)
+        {
+            _scrollView.delegate = self.delegateProxy.originalDelegate;
+        }
     }
-    
+  
     _scrollView = scrollView;
     self.scrollViewController.scrollView = scrollView;
     
-    if (_scrollView.delegate != self.delegateProxy)
-    {
-        self.delegateProxy.originalDelegate = _scrollView.delegate;
-        _scrollView.delegate = (id)self.delegateProxy;
+    if (self.delegateProxy) {
+        if (_scrollView.delegate != self.delegateProxy)
+        {
+            self.delegateProxy.originalDelegate = _scrollView.delegate;
+            _scrollView.delegate = (id)self.delegateProxy;
+        }
     }
-    
+  
     [self cleanup];
     [self layoutViews];
     
